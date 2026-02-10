@@ -15,7 +15,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +34,7 @@ import net.devstudy.resume.auth.api.dto.RestoreAccessForm;
 import net.devstudy.resume.auth.api.dto.RestorePasswordForm;
 import net.devstudy.resume.auth.api.model.CurrentProfile;
 import net.devstudy.resume.auth.api.security.CurrentProfileProvider;
+import net.devstudy.resume.auth.api.service.OidcAuthorizationRevocationService;
 import net.devstudy.resume.auth.api.service.ProfileAccountService;
 import net.devstudy.resume.auth.api.service.RestoreAccessService;
 import net.devstudy.resume.auth.api.service.UidSuggestionService;
@@ -55,6 +58,7 @@ public class PublicAuthApiController {
     private final RestoreAccessService restoreAccessService;
     private final DataBuilder dataBuilder;
     private final ObjectProvider<RememberMeSupport> rememberMeSupportProvider;
+    private final ObjectProvider<OidcAuthorizationRevocationService> oidcAuthorizationRevocationServiceProvider;
 
     @Value("${app.security.session.enabled:true}")
     private boolean sessionEnabled;
@@ -169,6 +173,26 @@ public class PublicAuthApiController {
         } catch (IllegalArgumentException ex) {
             return ApiErrorUtils.error(HttpStatus.BAD_REQUEST, "Restore token invalid", request);
         }
+    }
+
+    @PostMapping("/logout-all")
+    public ResponseEntity<?> logoutAll(HttpServletRequest request, HttpServletResponse response) {
+        CurrentProfile currentProfile = resolveCurrentProfile();
+        if (currentProfile == null || !StringUtils.hasText(currentProfile.getUsername())) {
+            return ApiErrorUtils.error(HttpStatus.UNAUTHORIZED, "Unauthorized", request);
+        }
+        OidcAuthorizationRevocationService oidcAuthorizationRevocationService =
+                oidcAuthorizationRevocationServiceProvider.getIfAvailable();
+        if (oidcAuthorizationRevocationService != null) {
+            oidcAuthorizationRevocationService.revokeAllByPrincipal(currentProfile.getUsername());
+        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        RememberMeSupport rememberMeSupport = rememberMeSupportProvider.getIfAvailable();
+        if (rememberMeSupport != null) {
+            rememberMeSupport.logout(request, response, authentication);
+        }
+        new SecurityContextLogoutHandler().logout(request, response, authentication);
+        return ResponseEntity.noContent().build();
     }
 
     private boolean establishSessionIfEnabled(CurrentProfile currentProfile,
