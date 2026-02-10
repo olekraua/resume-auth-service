@@ -1,0 +1,61 @@
+server:
+  port: 8081
+  forward-headers-strategy: framework
+
+spring:
+  application:
+    name: resume-auth-service
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/resume_auth}
+    username: ${SPRING_DATASOURCE_USERNAME:postgres}
+    password: ${SPRING_DATASOURCE_PASSWORD:postgres}
+  jpa:
+    open-in-view: false
+  flyway:
+    enabled: true
+    locations: classpath:db/migration/auth_nodup
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${AUTH_ISSUER_URI:http://localhost:8080}
+  mail:
+    host: ${SPRING_MAIL_HOST:}
+    port: ${SPRING_MAIL_PORT:}
+    username: ${SMTP_USER:}
+    password: ${SMTP_PASS:}
+
+app:
+  cors:
+    allowed-origins:
+      - ${APP_CORS_ALLOWED_ORIGINS:http://localhost:4200}
+  outbox:
+    enabled: true
+  search:
+    elasticsearch:
+      enabled: false
+  restore:
+    mail:
+      enabled: ${APP_RESTORE_MAIL_ENABLED:true}
+  services:
+    profile:
+      mode: remote
+      base-url: ${PROFILE_SERVICE_URL:http://localhost:8082}
+      internal-token: ${PROFILE_INTERNAL_TOKEN:dev-internal-token}
+  security:
+    session:
+      enabled: false
+    jwt:
+      enabled: true
+    oidc:
+      enabled: true
+      issuer: ${AUTH_ISSUER_URI:http://localhost:8080}
+      client-id: ${AUTH_CLIENT_ID:resume-spa}
+      redirect-uri: ${AUTH_REDIRECT_URI:http://localhost:4200/auth/callback}
+      post-logout-redirect-uri: ${AUTH_POST_LOGOUT_REDIRECT_URI:http://localhost:4200/}
+      access-token-ttl: ${AUTH_ACCESS_TOKEN_TTL:PT10M}
+      signing-key:
+        rotation-interval: ${AUTH_SIGNING_KEY_ROTATION_INTERVAL:PT24H}
+        token-ttl: ${AUTH_SIGNING_KEY_TOKEN_TTL:${AUTH_ACCESS_TOKEN_TTL:PT10M}}
+        clock-skew: ${AUTH_SIGNING_KEY_CLOCK_SKEW:PT1M}
+        encryption-key: ${AUTH_SIGNING_KEY_ENCRYPTION_KEY:}

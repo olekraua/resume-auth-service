@@ -1,0 +1,42 @@
+{
+  "analysis": {
+    "filter": {
+      "ukrainian_stop": {
+        "type": "stop",
+        "stopwords": [
+          "і",
+          "й",
+          "та",
+          "але",
+          "або",
+          "в",
+          "у",
+          "на",
+          "до",
+          "з",
+          "із",
+          "за",
+          "від",
+          "для",
+          "про",
+          "що",
+          "це",
+          "як",
+          "не",
+          "так"
+        ]
+      }
+    },
+    "analyzer": {
+      "ukrainian": {
+        "type": "custom",
+        "tokenizer": "standard",
+        "filter": [
+          "lowercase",
+          "ukrainian_stop"
+        ]
+      }
+    }
+  }
+}
+
