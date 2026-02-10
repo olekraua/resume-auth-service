@@ -8,9 +8,11 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
@@ -28,6 +30,8 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import net.devstudy.resume.auth.api.model.CurrentProfile;
 import net.devstudy.resume.auth.api.security.CurrentProfileProvider;
+import net.devstudy.resume.auth.internal.security.LoginLockedException;
+import net.devstudy.resume.auth.internal.security.LoginProtectionService;
 import net.devstudy.resume.shared.dto.ApiErrorResponse;
 import net.devstudy.resume.web.controller.SessionApiController;
 import net.devstudy.resume.web.api.ApiErrorUtils;
@@ -42,6 +46,7 @@ public class AuthApiController {
     private final CurrentProfileProvider currentProfileProvider;
     private final AuthenticationConfiguration authenticationConfiguration;
     private final RememberMeSupport rememberMeSupport;
+    private final LoginProtectionService loginProtectionService;
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult bindingResult,
@@ -52,6 +57,11 @@ public class AuthApiController {
         CurrentProfile existing = currentProfileProvider.getCurrentProfile();
         if (existing != null) {
             return ResponseEntity.ok(toSessionResponse(existing));
+        }
+        try {
+            loginProtectionService.assertLoginAllowed(request.username());
+        } catch (LoginLockedException ex) {
+            return toLockedResponse(ex, httpRequest);
         }
         AuthenticationManager authenticationManager;
         try {
@@ -65,8 +75,17 @@ public class AuthApiController {
                     new UsernamePasswordAuthenticationToken(request.username(), request.password())
             );
         } catch (AuthenticationException ex) {
+            LoginLockedException loginLockedException = extractLoginLockedException(ex);
+            if (loginLockedException != null) {
+                return toLockedResponse(loginLockedException, httpRequest);
+            }
+            if (ex instanceof LockedException lockedException) {
+                return toLockedResponse(lockedException, httpRequest);
+            }
+            loginProtectionService.onAuthenticationFailure(request.username());
             return ApiErrorUtils.error(HttpStatus.UNAUTHORIZED, "Invalid username or password", httpRequest);
         }
+        loginProtectionService.onAuthenticationSuccess(authentication.getName());
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
@@ -101,6 +120,32 @@ public class AuthApiController {
             return currentProfile;
         }
         return currentProfileProvider.getCurrentProfile();
+    }
+
+    private ResponseEntity<ApiErrorResponse> toLockedResponse(LockedException exception, HttpServletRequest request) {
+        long retryAfterSeconds = 60L;
+        if (exception instanceof LoginLockedException loginLockedException) {
+            retryAfterSeconds = loginLockedException.getRetryAfterSeconds();
+        }
+        ApiErrorResponse error = ApiErrorResponse.of(
+                HttpStatus.TOO_MANY_REQUESTS,
+                "Too many failed login attempts. Try again later.",
+                ApiErrorUtils.resolvePath(request)
+        );
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header(HttpHeaders.RETRY_AFTER, Long.toString(retryAfterSeconds))
+                .body(error);
+    }
+
+    private LoginLockedException extractLoginLockedException(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof LoginLockedException loginLockedException) {
+                return loginLockedException;
+            }
+            current = current.getCause();
+        }
+        return null;
     }
 
     public record LoginRequest(

@@ -39,6 +39,15 @@ public class AuthUser extends AbstractEntity<Long> {
     @Column(nullable = false)
     private boolean enabled = true;
 
+    @Column(name = "failed_login_attempts", nullable = false)
+    private int failedLoginAttempts = 0;
+
+    @Column(name = "last_failed_login_at")
+    private Instant lastFailedLoginAt;
+
+    @Column(name = "login_locked_until")
+    private Instant loginLockedUntil;
+
     public AuthUser() {
     }
 
@@ -97,5 +106,29 @@ public class AuthUser extends AbstractEntity<Long> {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public int getFailedLoginAttempts() {
+        return failedLoginAttempts;
+    }
+
+    public void setFailedLoginAttempts(int failedLoginAttempts) {
+        this.failedLoginAttempts = failedLoginAttempts;
+    }
+
+    public Instant getLastFailedLoginAt() {
+        return lastFailedLoginAt;
+    }
+
+    public void setLastFailedLoginAt(Instant lastFailedLoginAt) {
+        this.lastFailedLoginAt = lastFailedLoginAt;
+    }
+
+    public Instant getLoginLockedUntil() {
+        return loginLockedUntil;
+    }
+
+    public void setLoginLockedUntil(Instant loginLockedUntil) {
+        this.loginLockedUntil = loginLockedUntil;
     }
 }

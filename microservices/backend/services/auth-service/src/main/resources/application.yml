@@ -47,6 +47,12 @@ app:
       enabled: false
     jwt:
       enabled: true
+    login-protection:
+      enabled: ${AUTH_LOGIN_PROTECTION_ENABLED:true}
+      max-failed-attempts-before-lockout: ${AUTH_LOGIN_MAX_FAILED_ATTEMPTS_BEFORE_LOCKOUT:5}
+      reset-window: ${AUTH_LOGIN_RESET_WINDOW:PT30M}
+      initial-backoff: ${AUTH_LOGIN_INITIAL_BACKOFF:PT30S}
+      max-backoff: ${AUTH_LOGIN_MAX_BACKOFF:PT30M}
     oidc:
       enabled: true
       issuer: ${AUTH_ISSUER_URI:http://localhost:8080}

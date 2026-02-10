@@ -24,6 +24,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.jackson2.SecurityJackson2Modules;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
@@ -44,9 +45,12 @@ import org.springframework.security.oauth2.server.authorization.settings.TokenSe
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
@@ -58,6 +62,8 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 import net.devstudy.resume.auth.api.model.CurrentProfile;
+import net.devstudy.resume.auth.internal.security.LoginLockedException;
+import net.devstudy.resume.auth.internal.security.LoginProtectionService;
 import net.devstudy.resume.ms.auth.security.PersistentJwtSigningKeyStore;
 import net.devstudy.resume.web.security.CurrentProfileJwtConverter;
 import net.devstudy.resume.web.security.JwtAuthenticationFailureEntryPoint;
@@ -97,7 +103,8 @@ public class OidcAuthorizationServerConfig {
             CurrentProfileJwtConverter currentProfileJwtConverter,
             JwtAuthenticationFailureEntryPoint jwtAuthenticationFailureEntryPoint,
             RequestCache requestCache,
-            AuthenticationSuccessHandler authenticationSuccessHandler) throws Exception {
+            AuthenticationSuccessHandler authenticationSuccessHandler,
+            AuthenticationFailureHandler authenticationFailureHandler) throws Exception {
         http
                 .cors(withDefaults())
                 .requestCache(cache -> cache.requestCache(requestCache))
@@ -114,7 +121,9 @@ public class OidcAuthorizationServerConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .authenticationEntryPoint(jwtAuthenticationFailureEntryPoint)
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(currentProfileJwtConverter)))
-                .formLogin(form -> form.successHandler(authenticationSuccessHandler));
+                .formLogin(form -> form
+                        .successHandler(authenticationSuccessHandler)
+                        .failureHandler(authenticationFailureHandler));
         return http.build();
     }
 
@@ -124,10 +133,12 @@ public class OidcAuthorizationServerConfig {
     }
 
     @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler(RequestCache requestCache) {
+    public AuthenticationSuccessHandler authenticationSuccessHandler(RequestCache requestCache,
+            LoginProtectionService loginProtectionService) {
         SavedRequestAwareAuthenticationSuccessHandler delegate = new SavedRequestAwareAuthenticationSuccessHandler();
         delegate.setRequestCache(requestCache);
         return (request, response, authentication) -> {
+            loginProtectionService.onAuthenticationSuccess(authentication.getName());
             SavedRequest savedRequest = requestCache.getRequest(request, response);
             String rewrittenTargetUrl = rewriteSavedErrorRedirect(savedRequest);
             if (rewrittenTargetUrl != null) {
@@ -136,6 +147,24 @@ public class OidcAuthorizationServerConfig {
                 return;
             }
             delegate.onAuthenticationSuccess(request, response, authentication);
+        };
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler(LoginProtectionService loginProtectionService) {
+        SimpleUrlAuthenticationFailureHandler delegate = new SimpleUrlAuthenticationFailureHandler("/login?error");
+        return (request, response, exception) -> {
+            LoginLockedException loginLockedException = extractLoginLockedException(exception);
+            boolean locked = loginLockedException != null || exception instanceof LockedException;
+            if (!locked) {
+                String username = request.getParameter(
+                        UsernamePasswordAuthenticationFilter.SPRING_SECURITY_FORM_USERNAME_KEY);
+                loginProtectionService.onAuthenticationFailure(username);
+            }
+            if (loginLockedException != null) {
+                response.setHeader("Retry-After", Long.toString(loginLockedException.getRetryAfterSeconds()));
+            }
+            delegate.onAuthenticationFailure(request, response, exception);
         };
     }
 
@@ -316,6 +345,17 @@ public class OidcAuthorizationServerConfig {
             }
         });
         return redirectToAuthorize.build(true).toUriString();
+    }
+
+    private LoginLockedException extractLoginLockedException(Throwable throwable) {
+        Throwable current = throwable;
+        while (current != null) {
+            if (current instanceof LoginLockedException loginLockedException) {
+                return loginLockedException;
+            }
+            current = current.getCause();
+        }
+        return null;
     }
 
     @JsonDeserialize(using = CurrentProfileDeserializer.class)

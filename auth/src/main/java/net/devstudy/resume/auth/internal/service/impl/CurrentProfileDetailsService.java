@@ -3,6 +3,7 @@ package net.devstudy.resume.auth.internal.service.impl;
 import lombok.RequiredArgsConstructor;
 import net.devstudy.resume.auth.api.model.CurrentProfile;
 import net.devstudy.resume.auth.api.service.ProfileAccountService;
+import net.devstudy.resume.auth.internal.security.LoginProtectionService;
 import net.devstudy.resume.profile.api.dto.internal.ProfileAuthResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -14,9 +15,11 @@ import org.springframework.stereotype.Service;
 public class CurrentProfileDetailsService implements UserDetailsService {
 
     private final ProfileAccountService profileAccountService;
+    private final LoginProtectionService loginProtectionService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        loginProtectionService.assertLoginAllowed(username);
         ProfileAuthResponse auth = profileAccountService.loadForAuth(username);
         if (auth == null || auth.uid() == null) {
             throw new UsernameNotFoundException("Profile not found: " + username);
