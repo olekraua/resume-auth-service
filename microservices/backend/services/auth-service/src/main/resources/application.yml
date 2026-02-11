@@ -40,8 +40,20 @@ app:
   services:
     profile:
       mode: remote
-      base-url: ${PROFILE_SERVICE_URL:http://localhost:8082}
-      internal-token: ${PROFILE_INTERNAL_TOKEN}
+      base-url: ${PROFILE_SERVICE_URL:https://localhost:8082}
+      service-jwt:
+        token-uri: ${AUTH_INTERNAL_TOKEN_URI:http://localhost:8081/oauth2/token}
+        client-id: ${AUTH_INTERNAL_CLIENT_ID:resume-profile-internal}
+        client-secret: ${AUTH_INTERNAL_CLIENT_SECRET}
+        scope: ${AUTH_INTERNAL_CLIENT_SCOPE:internal.profile}
+      mtls:
+        enabled: ${AUTH_INTERNAL_MTLS_ENABLED:true}
+        key-store-path: ${AUTH_INTERNAL_MTLS_KEYSTORE_PATH:}
+        key-store-password: ${AUTH_INTERNAL_MTLS_KEYSTORE_PASSWORD:}
+        key-store-type: ${AUTH_INTERNAL_MTLS_KEYSTORE_TYPE:PKCS12}
+        trust-store-path: ${AUTH_INTERNAL_MTLS_TRUSTSTORE_PATH:}
+        trust-store-password: ${AUTH_INTERNAL_MTLS_TRUSTSTORE_PASSWORD:}
+        trust-store-type: ${AUTH_INTERNAL_MTLS_TRUSTSTORE_TYPE:PKCS12}
   security:
     session:
       enabled: false
@@ -60,6 +72,11 @@ app:
       redirect-uri: ${AUTH_REDIRECT_URI:http://localhost:4200/auth/callback}
       post-logout-redirect-uri: ${AUTH_POST_LOGOUT_REDIRECT_URI:http://localhost:4200/}
       access-token-ttl: ${AUTH_ACCESS_TOKEN_TTL:PT10M}
+      internal-client:
+        client-id: ${AUTH_INTERNAL_CLIENT_ID:resume-profile-internal}
+        client-secret: ${AUTH_INTERNAL_CLIENT_SECRET}
+        scope: ${AUTH_INTERNAL_CLIENT_SCOPE:internal.profile}
+        access-token-ttl: ${AUTH_INTERNAL_ACCESS_TOKEN_TTL:PT2M}
       signing-key:
         rotation-interval: ${AUTH_SIGNING_KEY_ROTATION_INTERVAL:PT24H}
         token-ttl: ${AUTH_SIGNING_KEY_TOKEN_TTL:${AUTH_ACCESS_TOKEN_TTL:PT10M}}

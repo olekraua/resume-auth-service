@@ -5,6 +5,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.UUID;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.nimbusds.jose.jwk.JWK;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.SmartInitializingSingleton;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -44,6 +46,9 @@ import org.springframework.security.oauth2.server.authorization.settings.ClientS
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -55,6 +60,7 @@ import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -173,12 +179,36 @@ public class OidcAuthorizationServerConfig {
             @Value("${app.security.oidc.client-id:resume-spa}") String clientId,
             @Value("${app.security.oidc.redirect-uri:http://localhost:4200/auth/callback}") String redirectUri,
             @Value("${app.security.oidc.post-logout-redirect-uri:http://localhost:4200/}") String postLogoutRedirectUri,
-            @Value("${app.security.oidc.access-token-ttl:PT10M}") Duration accessTokenTtl) {
+            @Value("${app.security.oidc.access-token-ttl:PT10M}") Duration accessTokenTtl,
+            @Value("${app.security.oidc.internal-client.client-id:resume-profile-internal}") String internalClientId,
+            @Value("${app.security.oidc.internal-client.client-secret:}") String internalClientSecret,
+            @Value("${app.security.oidc.internal-client.scope:internal.profile}") String internalClientScope,
+            @Value("${app.security.oidc.internal-client.access-token-ttl:PT2M}") Duration internalClientAccessTokenTtl,
+            PasswordEncoder passwordEncoder) {
         JdbcRegisteredClientRepository repository = new JdbcRegisteredClientRepository(jdbcTemplate);
         RegisteredClient existing = repository.findByClientId(clientId);
         if (!isPublicSpaClientUpToDate(existing, redirectUri, postLogoutRedirectUri, accessTokenTtl)) {
             String id = existing != null ? existing.getId() : UUID.randomUUID().toString();
             repository.save(buildPublicSpaClient(id, clientId, redirectUri, postLogoutRedirectUri, accessTokenTtl));
+        }
+        if (!StringUtils.hasText(internalClientSecret)) {
+            throw new IllegalStateException("app.security.oidc.internal-client.client-secret must be configured");
+        }
+        RegisteredClient existingInternalClient = repository.findByClientId(internalClientId);
+        if (!isServiceClientUpToDate(existingInternalClient,
+                internalClientScope,
+                internalClientAccessTokenTtl,
+                internalClientSecret,
+                passwordEncoder)) {
+            String id = existingInternalClient != null
+                    ? existingInternalClient.getId()
+                    : UUID.randomUUID().toString();
+            repository.save(buildServiceClient(id,
+                    internalClientId,
+                    internalClientSecret,
+                    internalClientScope,
+                    internalClientAccessTokenTtl,
+                    passwordEncoder));
         }
         return repository;
     }
@@ -223,6 +253,13 @@ public class OidcAuthorizationServerConfig {
     }
 
     @Bean
+    public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+        NimbusJwtEncoder jwtEncoder = new NimbusJwtEncoder(jwkSource);
+        jwtEncoder.setJwkSelector(OidcAuthorizationServerConfig::selectPreferredSigningKey);
+        return jwtEncoder;
+    }
+
+    @Bean
     public SmartInitializingSingleton oidcSigningKeyStoreFailFastInitializer(
             PersistentJwtSigningKeyStore persistentJwtSigningKeyStore) {
         return persistentJwtSigningKeyStore::verifyStoreAvailabilityOrFailFast;
@@ -231,7 +268,8 @@ public class OidcAuthorizationServerConfig {
     @Bean
     public SmartInitializingSingleton oidcTokenLifetimeWindowGuard(
             @Value("${app.security.oidc.access-token-ttl:PT10M}") Duration accessTokenTtl,
-            @Value("${app.security.oidc.signing-key.token-ttl:${app.security.oidc.access-token-ttl:PT10M}}") Duration signingKeyTokenTtl,
+            @Value("${app.security.oidc.signing-key.token-ttl:${app.security.oidc.access-token-ttl:PT10M}}")
+            Duration signingKeyTokenTtl,
             @Value("${app.security.oidc.signing-key.clock-skew:PT1M}") Duration signingKeyClockSkew) {
         return () -> validateTokenLifetimeWindow(accessTokenTtl, signingKeyTokenTtl, signingKeyClockSkew);
     }
@@ -247,7 +285,8 @@ public class OidcAuthorizationServerConfig {
     @Bean
     public OAuth2TokenCustomizer<JwtEncodingContext> jwtCustomizer() {
         return context -> {
-            if (context.getPrincipal() != null && context.getPrincipal().getPrincipal() instanceof CurrentProfile profile) {
+            if (context.getPrincipal() != null
+                    && context.getPrincipal().getPrincipal() instanceof CurrentProfile profile) {
                 if (profile.getId() != null) {
                     context.getClaims().claim("profile_id", profile.getId().toString());
                 }
@@ -281,6 +320,24 @@ public class OidcAuthorizationServerConfig {
                 .build();
     }
 
+    private RegisteredClient buildServiceClient(String id,
+            String clientId,
+            String clientSecret,
+            String scope,
+            Duration accessTokenTtl,
+            PasswordEncoder passwordEncoder) {
+        return RegisteredClient.withId(id)
+                .clientId(clientId)
+                .clientSecret(passwordEncoder.encode(clientSecret))
+                .clientAuthenticationMethod(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                .authorizationGrantType(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                .scope(scope)
+                .tokenSettings(TokenSettings.builder()
+                        .accessTokenTimeToLive(accessTokenTtl)
+                        .build())
+                .build();
+    }
+
     private boolean isPublicSpaClientUpToDate(RegisteredClient existing,
             String redirectUri,
             String postLogoutRedirectUri,
@@ -289,19 +346,59 @@ public class OidcAuthorizationServerConfig {
             return false;
         }
         TokenSettings tokenSettings = existing.getTokenSettings();
+        return hasPublicSpaAuthenticationAndGrantTypes(existing)
+                && hasPublicSpaRedirectUris(existing, redirectUri, postLogoutRedirectUri)
+                && hasPublicSpaScopes(existing)
+                && hasPublicSpaClientSettings(existing)
+                && hasPublicSpaTokenSettings(tokenSettings, accessTokenTtl);
+    }
+
+    private boolean hasPublicSpaAuthenticationAndGrantTypes(RegisteredClient existing) {
         return existing.getClientAuthenticationMethods().contains(ClientAuthenticationMethod.NONE)
                 && existing.getAuthorizationGrantTypes().contains(AuthorizationGrantType.AUTHORIZATION_CODE)
-                && existing.getAuthorizationGrantTypes().contains(AuthorizationGrantType.REFRESH_TOKEN)
-                && existing.getRedirectUris().contains(redirectUri)
-                && existing.getPostLogoutRedirectUris().contains(postLogoutRedirectUri)
-                && existing.getScopes().contains(OidcScopes.OPENID)
+                && existing.getAuthorizationGrantTypes().contains(AuthorizationGrantType.REFRESH_TOKEN);
+    }
+
+    private boolean hasPublicSpaRedirectUris(RegisteredClient existing,
+            String redirectUri,
+            String postLogoutRedirectUri) {
+        return existing.getRedirectUris().contains(redirectUri)
+                && existing.getPostLogoutRedirectUris().contains(postLogoutRedirectUri);
+    }
+
+    private boolean hasPublicSpaScopes(RegisteredClient existing) {
+        return existing.getScopes().contains(OidcScopes.OPENID)
                 && existing.getScopes().contains(OidcScopes.PROFILE)
-                && existing.getScopes().contains("offline_access")
-                && existing.getClientSettings().isRequireProofKey()
-                && !existing.getClientSettings().isRequireAuthorizationConsent()
-                && tokenSettings != null
+                && existing.getScopes().contains("offline_access");
+    }
+
+    private boolean hasPublicSpaClientSettings(RegisteredClient existing) {
+        return existing.getClientSettings().isRequireProofKey()
+                && !existing.getClientSettings().isRequireAuthorizationConsent();
+    }
+
+    private boolean hasPublicSpaTokenSettings(TokenSettings tokenSettings, Duration accessTokenTtl) {
+        return tokenSettings != null
                 && accessTokenTtl.equals(tokenSettings.getAccessTokenTimeToLive())
                 && !tokenSettings.isReuseRefreshTokens();
+    }
+
+    private boolean isServiceClientUpToDate(RegisteredClient existing,
+            String scope,
+            Duration accessTokenTtl,
+            String rawClientSecret,
+            PasswordEncoder passwordEncoder) {
+        if (existing == null || !StringUtils.hasText(rawClientSecret)) {
+            return false;
+        }
+        TokenSettings tokenSettings = existing.getTokenSettings();
+        return existing.getClientAuthenticationMethods().contains(ClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+                && existing.getAuthorizationGrantTypes().contains(AuthorizationGrantType.CLIENT_CREDENTIALS)
+                && existing.getScopes().contains(scope)
+                && StringUtils.hasText(existing.getClientSecret())
+                && passwordEncoder.matches(rawClientSecret, existing.getClientSecret())
+                && tokenSettings != null
+                && accessTokenTtl.equals(tokenSettings.getAccessTokenTimeToLive());
     }
 
     private void validateTokenLifetimeWindow(Duration accessTokenTtl,
@@ -320,6 +417,18 @@ public class OidcAuthorizationServerConfig {
             throw new IllegalStateException(
                     "access-token-ttl must be <= signing-key.token-ttl to keep old kid available for active tokens");
         }
+    }
+
+    private static JWK selectPreferredSigningKey(List<JWK> candidates) {
+        if (candidates == null || candidates.isEmpty()) {
+            throw new IllegalStateException("No matching JWK found for JWT signing");
+        }
+        for (JWK candidate : candidates) {
+            if (candidate != null && candidate.isPrivate()) {
+                return candidate;
+            }
+        }
+        return candidates.get(0);
     }
 
     private String rewriteSavedErrorRedirect(SavedRequest savedRequest) {

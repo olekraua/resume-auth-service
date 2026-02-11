@@ -100,7 +100,8 @@ public class PersistentJwtSigningKeyStore {
     public PersistentJwtSigningKeyStore(JdbcTemplate jdbcTemplate,
             PlatformTransactionManager transactionManager,
             @Value("${app.security.oidc.signing-key.rotation-interval:PT24H}") Duration rotationInterval,
-            @Value("${app.security.oidc.signing-key.token-ttl:${app.security.oidc.access-token-ttl:PT10M}}") Duration signedTokenTtl,
+            @Value("${app.security.oidc.signing-key.token-ttl:${app.security.oidc.access-token-ttl:PT10M}}")
+            Duration signedTokenTtl,
             @Value("${app.security.oidc.signing-key.clock-skew:PT1M}") Duration clockSkew,
             @Value("${app.security.oidc.signing-key.encryption-key:}") String encryptionKeyBase64) {
         this.jdbcTemplate = jdbcTemplate;
