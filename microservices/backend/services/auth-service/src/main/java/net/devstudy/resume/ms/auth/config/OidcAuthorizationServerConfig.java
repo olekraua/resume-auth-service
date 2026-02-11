@@ -177,8 +177,8 @@ public class OidcAuthorizationServerConfig {
     @Bean
     public RegisteredClientRepository registeredClientRepository(JdbcTemplate jdbcTemplate,
             @Value("${app.security.oidc.client-id:resume-spa}") String clientId,
-            @Value("${app.security.oidc.redirect-uri:http://localhost:4200/auth/callback}") String redirectUri,
-            @Value("${app.security.oidc.post-logout-redirect-uri:http://localhost:4200/}") String postLogoutRedirectUri,
+            @Value("${app.security.oidc.redirect-uri:https://localhost:4200/auth/callback}") String redirectUri,
+            @Value("${app.security.oidc.post-logout-redirect-uri:https://localhost:4200/}") String postLogoutRedirectUri,
             @Value("${app.security.oidc.access-token-ttl:PT10M}") Duration accessTokenTtl,
             @Value("${app.security.oidc.internal-client.client-id:resume-profile-internal}") String internalClientId,
             @Value("${app.security.oidc.internal-client.client-secret:}") String internalClientSecret,
@@ -276,7 +276,7 @@ public class OidcAuthorizationServerConfig {
 
     @Bean
     public AuthorizationServerSettings authorizationServerSettings(
-            @Value("${app.security.oidc.issuer:http://localhost:8080}") String issuer) {
+            @Value("${app.security.oidc.issuer:https://localhost:8443}") String issuer) {
         return AuthorizationServerSettings.builder()
                 .issuer(issuer)
                 .build();
