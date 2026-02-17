@@ -56,7 +56,7 @@ import org.springframework.security.web.authentication.LoginUrlAuthenticationEnt
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.CookieRequestCache;
 import org.springframework.security.web.savedrequest.RequestCache;
 import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.security.web.util.matcher.RequestMatcher;
@@ -117,6 +117,12 @@ public class OidcAuthorizationServerConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.GET, "/api/me").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/auth/uid-hint").permitAll()
+                        .requestMatchers(HttpMethod.GET,
+                                "/actuator/health",
+                                "/actuator/health/**",
+                                "/actuator/info",
+                                "/actuator/prometheus")
+                        .permitAll()
                         .requestMatchers("/error", "/favicon.ico", "/default-ui.css").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/register").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/auth/restore").permitAll()
@@ -135,7 +141,7 @@ public class OidcAuthorizationServerConfig {
 
     @Bean
     public RequestCache requestCache() {
-        return new HttpSessionRequestCache();
+        return new CookieRequestCache();
     }
 
     @Bean

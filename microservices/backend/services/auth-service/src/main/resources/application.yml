@@ -33,6 +33,20 @@ spring:
     password: ${SMTP_PASS}
 
 app:
+  platform:
+    middleware:
+      timeout:
+        enabled: ${APP_PLATFORM_TIMEOUT_ENABLED:true}
+      retry:
+        enabled: ${APP_PLATFORM_RETRY_ENABLED:true}
+      circuit:
+        enabled: ${APP_PLATFORM_CIRCUIT_ENABLED:true}
+      idempotency:
+        enabled: ${APP_PLATFORM_IDEMPOTENCY_ENABLED:true}
+      telemetry:
+        enabled: ${APP_PLATFORM_TELEMETRY_ENABLED:true}
+        request-id-header: ${APP_PLATFORM_REQUEST_ID_HEADER:X-Request-Id}
+        trace-id-header: ${APP_PLATFORM_TRACE_ID_HEADER:X-Trace-Id}
   cors:
     allowed-origins:
       - ${APP_CORS_ALLOWED_ORIGINS:https://localhost:4200}
