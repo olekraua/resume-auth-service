@@ -146,13 +146,16 @@ public class OidcAuthorizationServerConfig {
 
     @Bean
     public AuthenticationSuccessHandler authenticationSuccessHandler(RequestCache requestCache,
-            LoginProtectionService loginProtectionService) {
+            LoginProtectionService loginProtectionService,
+            @Value("${app.security.oidc.post-logout-redirect-uri:https://localhost:4200/}")
+            String defaultSuccessRedirectUrl) {
         SavedRequestAwareAuthenticationSuccessHandler delegate = new SavedRequestAwareAuthenticationSuccessHandler();
         delegate.setRequestCache(requestCache);
+        delegate.setDefaultTargetUrl(defaultSuccessRedirectUrl);
         return (request, response, authentication) -> {
             loginProtectionService.onAuthenticationSuccess(authentication.getName());
             SavedRequest savedRequest = requestCache.getRequest(request, response);
-            String rewrittenTargetUrl = rewriteSavedErrorRedirect(savedRequest);
+            String rewrittenTargetUrl = rewriteSavedErrorRedirect(savedRequest, defaultSuccessRedirectUrl);
             if (rewrittenTargetUrl != null) {
                 requestCache.removeRequest(request, response);
                 response.sendRedirect(rewrittenTargetUrl);
@@ -437,17 +440,20 @@ public class OidcAuthorizationServerConfig {
         return candidates.get(0);
     }
 
-    private String rewriteSavedErrorRedirect(SavedRequest savedRequest) {
+    private String rewriteSavedErrorRedirect(SavedRequest savedRequest, String defaultSuccessRedirectUrl) {
         if (savedRequest == null) {
             return null;
         }
         UriComponents savedRedirect = UriComponentsBuilder.fromUriString(savedRequest.getRedirectUrl()).build(true);
+        if ("/login".equals(savedRedirect.getPath())) {
+            return defaultSuccessRedirectUrl;
+        }
         if (!"/error".equals(savedRedirect.getPath())) {
             return null;
         }
         if (!savedRedirect.getQueryParams().containsKey("client_id")
                 || !"code".equals(savedRedirect.getQueryParams().getFirst("response_type"))) {
-            return null;
+            return defaultSuccessRedirectUrl;
         }
         UriComponentsBuilder redirectToAuthorize = UriComponentsBuilder.newInstance()
                 .scheme(savedRedirect.getScheme())
