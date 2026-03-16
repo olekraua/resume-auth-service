@@ -1,0 +1,5 @@
+Generated at (UTC): 2026-03-16T17:58:53Z
+Git branch: task/libs-and-auth
+Git commit: a51a7ac93ffbd93fd463fb36f030f46f65204025
+
+Command: ./mvnw -pl microservices/backend/services/auth-service -am -DskipTests dependency:tree -Dincludes=net.devstudy

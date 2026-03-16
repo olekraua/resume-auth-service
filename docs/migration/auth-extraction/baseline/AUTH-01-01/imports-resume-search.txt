@@ -1,0 +1,1 @@
+No imports from net.devstudy.resume.search.* in src/main/java
