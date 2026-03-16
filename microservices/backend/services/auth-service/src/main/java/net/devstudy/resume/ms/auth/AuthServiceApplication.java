@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 
 import net.devstudy.resume.web.controller.SessionApiController;
 import net.devstudy.resume.web.controller.api.AccountApiController;
+import net.devstudy.resume.web.controller.api.ApiExceptionHandler;
 import net.devstudy.resume.web.controller.api.AuthApiController;
 import net.devstudy.resume.web.controller.api.CsrfApiController;
 import net.devstudy.resume.web.controller.api.PublicAuthApiController;
@@ -29,7 +30,8 @@ import net.devstudy.resume.web.controller.api.PublicAuthApiController;
         PublicAuthApiController.class,
         AccountApiController.class,
         SessionApiController.class,
-        CsrfApiController.class
+        CsrfApiController.class,
+        ApiExceptionHandler.class
 })
 public class AuthServiceApplication {
 
