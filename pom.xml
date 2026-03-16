@@ -217,6 +217,37 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-enforcer-plugin</artifactId>
+				<version>3.5.0</version>
+				<executions>
+					<execution>
+						<id>enforce-banned-dependencies</id>
+						<phase>validate</phase>
+						<goals>
+							<goal>enforce</goal>
+						</goals>
+						<configuration>
+							<rules>
+								<bannedDependencies>
+									<searchTransitive>true</searchTransitive>
+									<excludes>
+										<exclude>net.devstudy:resume-web</exclude>
+										<exclude>net.devstudy:resume-search</exclude>
+										<exclude>net.devstudy:resume-auth</exclude>
+										<exclude>net.devstudy:resume-profile</exclude>
+										<exclude>net.devstudy:resume-notification</exclude>
+									</excludes>
+									<message>
+										Banned domain dependencies detected. Use contracts + shared only for resume-auth-service.
+									</message>
+								</bannedDependencies>
+							</rules>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-checkstyle-plugin</artifactId>
 				<version>3.3.1</version>
 				<configuration>
