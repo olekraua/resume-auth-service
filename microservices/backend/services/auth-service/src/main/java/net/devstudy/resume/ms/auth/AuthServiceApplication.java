@@ -4,12 +4,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.context.annotation.ComponentScan;
 
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {
+        "net.devstudy.resume.ms.auth",
+        "net.devstudy.resume.auth",
+        "net.devstudy.resume.web",
+        "net.devstudy.resume.shared"
+})
 @EnableCaching
-@ConfigurationPropertiesScan(basePackages = "net.devstudy.resume")
-@ComponentScan(basePackages = {
+@ConfigurationPropertiesScan(basePackages = {
         "net.devstudy.resume.ms.auth",
         "net.devstudy.resume.auth",
         "net.devstudy.resume.web",
