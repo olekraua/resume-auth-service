@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.User;
 
 import net.devstudy.resume.shared.constants.Constants;
 import net.devstudy.resume.profile.api.dto.internal.ProfileAuthResponse;
-import net.devstudy.resume.profile.api.model.Profile;
 
 public final class CurrentProfile extends User {
     @Serial
@@ -29,20 +28,6 @@ public final class CurrentProfile extends User {
         );
         this.id = auth.id();
         this.fullName = buildFullName(auth.firstName(), auth.lastName());
-    }
-
-    public CurrentProfile(Profile profile) {
-        super(
-            profile.getUid(),
-            "",
-            true,  // enabled
-            true,  // accountNonExpired
-            true,  // credentialsNonExpired
-            true,  // accountNonLocked
-            List.of(new SimpleGrantedAuthority(Constants.UI.USER))
-        );
-        this.id = profile.getId();
-        this.fullName = profile.getFullName();
     }
 
     public CurrentProfile(Long id, String uid, String fullName) {
