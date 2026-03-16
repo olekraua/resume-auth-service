@@ -26,6 +26,16 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+			<groupId>net.devstudy</groupId>
+			<artifactId>resume-auth-contracts</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>net.devstudy</groupId>
+			<artifactId>resume-profile-contracts</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-oauth2-authorization-server</artifactId>
 		</dependency>
