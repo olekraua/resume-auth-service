@@ -3,6 +3,7 @@ package net.devstudy.resume.ms.auth.persistence;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
@@ -37,6 +38,12 @@ import net.devstudy.resume.auth.internal.repository.storage.RememberMeTokenRepos
 @Testcontainers
 @Tag("integration")
 @Sql(statements = {
+        "DELETE FROM oauth2_authorization_consent",
+        "DELETE FROM oauth2_authorization",
+        "DELETE FROM oauth2_registered_client",
+        "DELETE FROM oauth2_signing_jwk_audit",
+        "DELETE FROM oauth2_signing_jwk",
+        "DELETE FROM oauth2_signing_key",
         "DELETE FROM auth_outbox",
         "DELETE FROM profile_restore",
         "DELETE FROM remember_me_token",
@@ -92,6 +99,112 @@ class AuthJpaRepositoriesIntegrationTest {
     }
 
     @Test
+    void flywayShouldCreateOidcTables() {
+        assertThat(tableExists("oauth2_registered_client")).isTrue();
+        assertThat(tableExists("oauth2_authorization")).isTrue();
+        assertThat(tableExists("oauth2_authorization_consent")).isTrue();
+        assertThat(tableExists("oauth2_signing_key")).isTrue();
+        assertThat(tableExists("oauth2_signing_jwk")).isTrue();
+        assertThat(tableExists("oauth2_signing_jwk_audit")).isTrue();
+    }
+
+    @Test
+    void oidcAuthorizationSchemaShouldSupportRoundTrip() {
+        jdbcTemplate.update("""
+                INSERT INTO oauth2_registered_client (
+                    id, client_id, client_name, client_authentication_methods,
+                    authorization_grant_types, scopes, client_settings, token_settings
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                "client-1",
+                "resume-auth-integration",
+                "Integration client",
+                "client_secret_basic",
+                "authorization_code,refresh_token",
+                "openid,profile",
+                "{\"settings\":\"client\"}",
+                "{\"settings\":\"token\"}"
+        );
+
+        jdbcTemplate.update("""
+                INSERT INTO oauth2_authorization (
+                    id, registered_client_id, principal_name, authorization_grant_type,
+                    authorized_scopes, attributes, access_token_value, access_token_metadata
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                "authz-1",
+                "client-1",
+                "integration-user",
+                "authorization_code",
+                "openid profile",
+                "{\"k\":\"v\"}",
+                "{\"token\":\"value\"}",
+                "{\"meta\":\"value\"}"
+        );
+
+        jdbcTemplate.update("""
+                INSERT INTO oauth2_authorization_consent (
+                    registered_client_id, principal_name, authorities
+                ) VALUES (?, ?, ?)
+                """,
+                "client-1",
+                "integration-user",
+                "SCOPE_openid,SCOPE_profile"
+        );
+
+        Integer clients = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM oauth2_registered_client WHERE id = ?",
+                Integer.class,
+                "client-1"
+        );
+        Integer authorizations = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM oauth2_authorization WHERE id = ?",
+                Integer.class,
+                "authz-1"
+        );
+        Integer consents = jdbcTemplate.queryForObject(
+                "SELECT COUNT(*) FROM oauth2_authorization_consent WHERE registered_client_id = ?",
+                Integer.class,
+                "client-1"
+        );
+        assertThat(clients).isEqualTo(1);
+        assertThat(authorizations).isEqualTo(1);
+        assertThat(consents).isEqualTo(1);
+
+        assertThat(columnDataType("oauth2_authorization", "attributes")).isEqualTo("text");
+        assertThat(columnDataType("oauth2_authorization", "access_token_value")).isEqualTo("text");
+        assertThat(columnDataType("oauth2_authorization", "access_token_metadata")).isEqualTo("text");
+    }
+
+    @Test
+    void oidcSigningJwkAuditTriggerShouldCaptureInsertUpdateDelete() {
+        jdbcTemplate.update("""
+                INSERT INTO oauth2_signing_jwk (key_id, jwk_json, is_current)
+                VALUES (?, ?, ?)
+                """,
+                "kid-integration-1",
+                "ENC:v1:{\"kid\":\"kid-integration-1\"}",
+                true
+        );
+
+        jdbcTemplate.update("""
+                UPDATE oauth2_signing_jwk
+                SET is_current = false, publish_until = now() + interval '1 day'
+                WHERE key_id = ?
+                """,
+                "kid-integration-1"
+        );
+
+        jdbcTemplate.update("DELETE FROM oauth2_signing_jwk WHERE key_id = ?", "kid-integration-1");
+
+        List<String> events = jdbcTemplate.queryForList(
+                "SELECT event_type FROM oauth2_signing_jwk_audit ORDER BY id",
+                String.class
+        );
+        assertThat(events).containsExactly("INSERT", "UPDATE", "DELETE");
+    }
+
+    @Test
     @Transactional
     void authUserRepositoryCrudAndQueriesShouldWork() {
         AuthUser authUser = new AuthUser();
@@ -111,6 +224,7 @@ class AuthJpaRepositoriesIntegrationTest {
     }
 
     @Test
+    @Transactional
     void profileRestoreRepositoryCrudAndQueriesShouldWork() {
         ProfileRestore restore = new ProfileRestore();
         restore.setProfileId(2001L);
@@ -127,6 +241,7 @@ class AuthJpaRepositoriesIntegrationTest {
     }
 
     @Test
+    @Transactional
     void rememberMeTokenRepositoryCrudAndQueriesShouldWork() {
         RememberMeToken token = new RememberMeToken();
         token.setSeries("series-1");
@@ -198,6 +313,19 @@ class AuthJpaRepositoriesIntegrationTest {
                 tableName
         );
         return count != null && count > 0;
+    }
+
+    private String columnDataType(String tableName, String columnName) {
+        return jdbcTemplate.queryForObject(
+                """
+                        SELECT data_type
+                        FROM information_schema.columns
+                        WHERE table_schema = 'public' AND table_name = ? AND column_name = ?
+                        """,
+                String.class,
+                tableName,
+                columnName
+        );
     }
 
     @SpringBootConfiguration
