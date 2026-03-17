@@ -51,6 +51,7 @@ import net.devstudy.resume.auth.internal.repository.storage.RememberMeTokenRepos
 })
 class AuthJpaRepositoriesIntegrationTest {
 
+    @SuppressWarnings("resource")
     @Container
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine")
             .withDatabaseName("resume_auth")
