@@ -104,7 +104,6 @@ class AuthRestoreAccessMailAsyncConsumerContractTest {
                         .as("AsyncAPI resource %s", resourcePath)
                         .isNotNull();
                 String yaml = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-                @SuppressWarnings("unchecked")
                 Map<String, Object> parsed = new Yaml().load(yaml);
                 assertThat(parsed).isNotNull();
                 return new AsyncApiContract(parsed);
