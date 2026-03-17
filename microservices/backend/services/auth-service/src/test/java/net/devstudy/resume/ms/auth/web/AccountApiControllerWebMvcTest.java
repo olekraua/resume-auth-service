@@ -18,11 +18,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import net.devstudy.resume.auth.api.model.CurrentProfile;
@@ -43,19 +43,19 @@ class AccountApiControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private PasswordEncoder passwordEncoder;
 
-    @MockBean
+    @MockitoBean
     private CurrentProfileProvider currentProfileProvider;
 
-    @MockBean
+    @MockitoBean
     private UidSuggestionService uidSuggestionService;
 
-    @MockBean
+    @MockitoBean
     private RememberMeSupport rememberMeSupport;
 
-    @MockBean
+    @MockitoBean
     private ProfileAccountService profileAccountService;
 
     @AfterEach
