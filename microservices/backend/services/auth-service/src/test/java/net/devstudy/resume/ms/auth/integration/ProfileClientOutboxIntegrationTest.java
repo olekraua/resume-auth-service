@@ -59,6 +59,7 @@ import net.devstudy.resume.shared.component.DataBuilder;
 @Tag("integration")
 class ProfileClientOutboxIntegrationTest {
 
+    @SuppressWarnings("resource")
     @Container
     static final PostgreSQLContainer<?> POSTGRES = new PostgreSQLContainer<>("postgres:16-alpine")
             .withDatabaseName("resume_auth")
