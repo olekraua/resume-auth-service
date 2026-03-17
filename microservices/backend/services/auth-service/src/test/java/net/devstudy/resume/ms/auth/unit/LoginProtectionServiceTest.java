@@ -1,7 +1,7 @@
 package net.devstudy.resume.ms.auth.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowableOfType;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -47,9 +47,9 @@ class LoginProtectionServiceTest {
         authUser.setLoginLockedUntil(Instant.now().plusSeconds(45));
         when(authUserRepository.findByUid("john")).thenReturn(Optional.of(authUser));
 
-        LoginLockedException ex = catchThrowableOfType(
-                () -> loginProtectionService.assertLoginAllowed("  John "),
-                LoginLockedException.class
+        LoginLockedException ex = assertThrows(
+                LoginLockedException.class,
+                () -> loginProtectionService.assertLoginAllowed("  John ")
         );
 
         assertThat(ex).isNotNull();
