@@ -15,7 +15,6 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import net.devstudy.resume.auth.api.model.CurrentProfile;
@@ -39,16 +39,16 @@ class AuthApiControllerWebMvcTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @MockitoBean
     private CurrentProfileProvider currentProfileProvider;
 
-    @MockBean
+    @MockitoBean
     private AuthenticationConfiguration authenticationConfiguration;
 
-    @MockBean
+    @MockitoBean
     private RememberMeSupport rememberMeSupport;
 
-    @MockBean
+    @MockitoBean
     private LoginProtectionService loginProtectionService;
 
     private final AuthenticationManager authenticationManager = Mockito.mock(AuthenticationManager.class);
