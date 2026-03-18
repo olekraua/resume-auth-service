@@ -184,3 +184,27 @@ Columns: `groupId:artifactId | version | scope | source | introduced-by | depend
 
 - `effective-pom-ref` is populated for artifacts classified as `inherited-parent`.
 - `action-proposal` is an audit hint for next tasks (E1-T2/E1-T4/E1-T5), not a final migration decision.
+
+## How To Reproduce Audit
+
+Run from repository root:
+
+```bash
+scripts/audit/generate-maven-audit.sh
+```
+
+Verify generated artifacts:
+
+```bash
+ls -lh target/audit/effective-pom.xml \
+  target/audit/dependency-tree-runtime.txt \
+  target/audit/dependency-tree-compile.txt \
+  target/audit/dependency-list-runtime.txt \
+  target/audit/dependency-mapping-runtime.tsv \
+  target/audit/runtime-deps-from-parent-with-proof.tsv \
+  target/audit/maven-as-is-inventory.tsv \
+  docs/architecture/maven-runtime-deps-from-parent.md \
+  docs/architecture/maven-as-is-inventory.md
+```
+
+Note: if GitHub Packages authentication is not configured, Maven may print `401 Unauthorized` metadata warnings, but audit artifacts can still be generated from locally available dependencies.
