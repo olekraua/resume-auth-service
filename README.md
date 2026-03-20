@@ -41,3 +41,9 @@ Required checks for PR merge:
 - `Build and Verify`
 - `Integration Tests`
 - `Contract Consumer Checks`
+
+## Architecture and planning docs
+
+- E1-T1 Jira-ready decomposition (v2): `docs/architecture/e1-t1-decomposition-jira-ready-v2.md`
+- AS-IS Maven inventory: `docs/architecture/maven-as-is-inventory.md`
+- Runtime deps from parent: `docs/architecture/maven-runtime-deps-from-parent.md`
