@@ -1,0 +1,19 @@
+name: PR Gate
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+  pull-requests: write
+  security-events: write
+
+jobs:
+  ci_policy:
+    uses: olekraua/resume-backend-infra/.github/workflows/reusable-ci-policy.yml@main
+    with:
+      coverage_threshold: 70
+    secrets: inherit
