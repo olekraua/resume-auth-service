@@ -95,7 +95,7 @@
 										<exclude>net.devstudy:resume-notification</exclude>
 									</excludes>
 									<message>
-										Banned domain dependencies detected. Use contracts + shared only for resume-auth-service.
+										Banned domain dependencies detected. Use contracts + platform-shared-auth only for resume-auth-service.
 									</message>
 								</bannedDependencies>
 							</rules>

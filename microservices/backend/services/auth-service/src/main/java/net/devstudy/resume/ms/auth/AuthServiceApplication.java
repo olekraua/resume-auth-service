@@ -2,22 +2,17 @@ package net.devstudy.resume.ms.auth;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
-import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Import;
 
-@SpringBootApplication(scanBasePackages = {
-        "net.devstudy.resume.ms.auth",
-        "net.devstudy.resume.auth",
-        "net.devstudy.resume.web",
-        "net.devstudy.resume.shared"
+import net.devstudy.resume.ms.auth.config.AuthModuleWiringConfiguration;
+import net.devstudy.resume.ms.auth.config.WebModuleWiringConfiguration;
+import net.devstudy.resume.web.controller.SessionApiController;
+
+@SpringBootApplication(scanBasePackageClasses = {
+        AuthServiceApplication.class,
+        SessionApiController.class
 })
-@EnableCaching
-@ConfigurationPropertiesScan(basePackages = {
-        "net.devstudy.resume.ms.auth",
-        "net.devstudy.resume.auth",
-        "net.devstudy.resume.web",
-        "net.devstudy.resume.shared"
-})
+@Import({AuthModuleWiringConfiguration.class, WebModuleWiringConfiguration.class})
 public class AuthServiceApplication {
 
     public static void main(String[] args) {
