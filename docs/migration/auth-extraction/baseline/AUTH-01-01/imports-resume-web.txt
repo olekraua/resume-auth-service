@@ -1,7 +1,0 @@
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/ms/auth/config/OidcAuthorizationServerConfig.java:74:import net.devstudy.resume.web.security.CurrentProfileJwtConverter;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/ms/auth/config/OidcAuthorizationServerConfig.java:75:import net.devstudy.resume.web.security.JwtAuthenticationFailureEntryPoint;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/ms/auth/AuthServiceApplication.java:10:import net.devstudy.resume.web.controller.SessionApiController;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/ms/auth/AuthServiceApplication.java:11:import net.devstudy.resume.web.controller.api.AccountApiController;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/ms/auth/AuthServiceApplication.java:12:import net.devstudy.resume.web.controller.api.AuthApiController;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/ms/auth/AuthServiceApplication.java:13:import net.devstudy.resume.web.controller.api.CsrfApiController;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/ms/auth/AuthServiceApplication.java:14:import net.devstudy.resume.web.controller.api.PublicAuthApiController;

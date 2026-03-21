@@ -1,4 +1,0 @@
-net.devstudy:resume-auth-service:jar:0.0.1-SNAPSHOT
-+- net.devstudy:resume-shared:jar:0.0.1-SNAPSHOT:compile
-+- net.devstudy:resume-auth-contracts:jar:0.0.1-SNAPSHOT:compile
-\- net.devstudy:resume-profile-contracts:jar:0.0.1-SNAPSHOT:compile

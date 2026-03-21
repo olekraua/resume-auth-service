@@ -1,6 +1,0 @@
-microservices/backend/services/auth-service/src/test/java/net/devstudy/resume/ms/auth/contract/AuthRestoreAccessMailAsyncConsumerContractTest.java:28:import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
-microservices/backend/services/auth-service/src/test/java/net/devstudy/resume/ms/auth/unit/RestoreAccessServiceImplTest.java:30:import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
-microservices/backend/services/auth-service/src/test/java/net/devstudy/resume/ms/auth/outbox/AuthOutboxComponentsTest.java:19:import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/auth/internal/service/impl/RestoreAccessServiceImpl.java:19:import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/auth/internal/outbox/AuthOutboxWriter.java:16:import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
-microservices/backend/services/auth-service/src/main/java/net/devstudy/resume/auth/internal/outbox/AuthOutboxListener.java:9:import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
