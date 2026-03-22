@@ -43,3 +43,6 @@ build/
 ### VS Code ###
 .vscode/
 .DS_Store
+
+# Vendored platform-libs build outputs
+vendor/platform-libs/**/target/

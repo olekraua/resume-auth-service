@@ -24,6 +24,16 @@
 		<dependency>
 			<groupId>net.devstudy</groupId>
 			<artifactId>platform-shared-auth</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>net.devstudy</groupId>
+					<artifactId>resume-shared</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>net.devstudy</groupId>
+			<artifactId>resume-shared</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>net.devstudy</groupId>

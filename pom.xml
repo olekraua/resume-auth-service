@@ -8,7 +8,7 @@
 		<groupId>net.devstudy</groupId>
 		<artifactId>platform-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
-		<relativePath />
+		<relativePath>vendor/platform-libs/platform-parent/pom.xml</relativePath>
 	</parent>
 
 	<groupId>net.devstudy</groupId>
@@ -19,63 +19,15 @@
 	<description>Parent and aggregator for resume-auth-service</description>
 
 	<modules>
-		<module>microservices/backend/services/auth-service</module>
+				<module>vendor/platform-libs</module>
+<module>microservices/backend/services/auth-service</module>
 	</modules>
 
-	<properties>
-		<java.version>21</java.version>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring-boot.version>3.5.11</spring-boot.version>
-		<maven.resources.version>3.3.1</maven.resources.version>
-		<maven.compiler.version>3.14.1</maven.compiler.version>
-		<maven.jar.version>3.4.2</maven.jar.version>
-		<test.tags.exclude>integration</test.tags.exclude>
-		<test.jvm.argLine>-XX:+EnableDynamicAgentLoading</test.jvm.argLine>
-		<spring-boot.run.skip>true</spring-boot.run.skip>
-		<maven.deploy.skip>true</maven.deploy.skip>
-	</properties>
-
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<groupId>net.devstudy</groupId>
-				<artifactId>platform-bom</artifactId>
-				<version>0.0.1-SNAPSHOT</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-resources-plugin</artifactId>
-					<version>${maven.resources.version}</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>${maven.compiler.version}</version>
-					<configuration>
-						<release>${java.version}</release>
-						<parameters>true</parameters>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<version>${maven.jar.version}</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>3.5.0</version>
 				<executions>
 					<execution>
 						<id>enforce-banned-dependencies</id>
@@ -103,67 +55,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-checkstyle-plugin</artifactId>
-				<version>3.3.1</version>
-				<configuration>
-					<configLocation>${maven.multiModuleProjectDirectory}/config/checkstyle/checkstyle.xml</configLocation>
-					<propertyExpansion>config_loc=${maven.multiModuleProjectDirectory}/config/checkstyle</propertyExpansion>
-					<includeTestSourceDirectory>false</includeTestSourceDirectory>
-					<failOnViolation>true</failOnViolation>
-					<consoleOutput>true</consoleOutput>
-				</configuration>
-				<executions>
-					<execution>
-						<phase>verify</phase>
-						<goals>
-							<goal>check</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>3.5.4</version>
-				<configuration>
-					<argLine>${test.jvm.argLine}</argLine>
-					<excludedGroups>${test.tags.exclude}</excludedGroups>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>integration</id>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-failsafe-plugin</artifactId>
-						<version>3.5.4</version>
-						<configuration>
-							<argLine>${test.jvm.argLine}</argLine>
-							<groups>integration</groups>
-							<includes>
-								<include>**/*Test.java</include>
-								<include>**/*Tests.java</include>
-								<include>**/*TestCase.java</include>
-							</includes>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>integration-test</goal>
-									<goal>verify</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>

@@ -1,0 +1,2 @@
+net.devstudy.resume.shared.component.config.PlatformSharedComponentsAutoConfiguration
+net.devstudy.resume.shared.config.PasswordEncoderConfig
