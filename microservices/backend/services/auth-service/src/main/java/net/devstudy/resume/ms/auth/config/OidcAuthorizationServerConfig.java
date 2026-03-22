@@ -83,8 +83,7 @@ public class OidcAuthorizationServerConfig {
     public SecurityFilterChain authorizationServerSecurityFilterChain(HttpSecurity http,
             RequestCache requestCache) throws Exception {
         OAuth2AuthorizationServerConfigurer authorizationServerConfigurer =
-                new OAuth2AuthorizationServerConfigurer();
-        authorizationServerConfigurer.oidc(withDefaults());
+                OAuth2AuthorizationServerConfigurer.authorizationServer();
 
         RequestMatcher endpointsMatcher = authorizationServerConfigurer.getEndpointsMatcher();
 
@@ -92,7 +91,7 @@ public class OidcAuthorizationServerConfig {
                 .cors(withDefaults())
                 .csrf(csrf -> csrf.ignoringRequestMatchers(endpointsMatcher))
                 .requestCache(cache -> cache.requestCache(requestCache))
-                .apply(authorizationServerConfigurer);
+                .with(authorizationServerConfigurer, configurer -> configurer.oidc(withDefaults()));
 
         http.authorizeHttpRequests(auth -> auth
                 .anyRequest().authenticated());
