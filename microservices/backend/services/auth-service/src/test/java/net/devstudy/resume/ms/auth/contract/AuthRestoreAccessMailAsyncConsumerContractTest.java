@@ -85,6 +85,7 @@ class AuthRestoreAccessMailAsyncConsumerContractTest {
         headers.put("x-event-id", event.getId().toString());
         headers.put("x-event-type", event.getEventType().name());
         headers.put("x-source-service", SOURCE_SERVICE);
+        headers.put("x-event-version", "1.0.0");
         headers.put("x-occurred-at", event.getCreatedAt().toString());
         return headers;
     }
