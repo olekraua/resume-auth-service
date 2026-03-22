@@ -23,16 +23,16 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import jakarta.transaction.Transactional;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxEvent;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxEventType;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxStatus;
-import net.devstudy.resume.auth.internal.entity.AuthUser;
-import net.devstudy.resume.auth.internal.entity.ProfileRestore;
-import net.devstudy.resume.auth.internal.entity.RememberMeToken;
-import net.devstudy.resume.auth.internal.repository.storage.AuthOutboxRepository;
-import net.devstudy.resume.auth.internal.repository.storage.AuthUserRepository;
-import net.devstudy.resume.auth.internal.repository.storage.ProfileRestoreRepository;
-import net.devstudy.resume.auth.internal.repository.storage.RememberMeTokenRepository;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxEvent;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxEventType;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxStatus;
+import net.devstudy.resume.ms.auth.domain.entity.AuthUser;
+import net.devstudy.resume.ms.auth.domain.entity.ProfileRestore;
+import net.devstudy.resume.ms.auth.domain.entity.RememberMeToken;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.AuthOutboxRepository;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.AuthUserRepository;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.ProfileRestoreRepository;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.RememberMeTokenRepository;
 
 @SpringBootTest(classes = AuthJpaRepositoriesIntegrationTest.TestApp.class)
 @Testcontainers

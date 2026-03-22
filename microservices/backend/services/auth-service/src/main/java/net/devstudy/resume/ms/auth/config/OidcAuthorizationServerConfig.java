@@ -67,12 +67,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
-import net.devstudy.resume.auth.api.model.CurrentProfile;
-import net.devstudy.resume.auth.internal.security.LoginLockedException;
-import net.devstudy.resume.auth.internal.security.LoginProtectionService;
+import net.devstudy.resume.ms.auth.api.model.CurrentProfile;
+import net.devstudy.resume.ms.auth.application.security.LoginLockedException;
+import net.devstudy.resume.ms.auth.application.security.LoginProtectionService;
 import net.devstudy.resume.ms.auth.security.PersistentJwtSigningKeyStore;
-import net.devstudy.resume.web.security.CurrentProfileJwtConverter;
-import net.devstudy.resume.web.security.JwtAuthenticationFailureEntryPoint;
+import net.devstudy.resume.ms.auth.adapters.web.security.CurrentProfileJwtConverter;
+import net.devstudy.resume.ms.auth.adapters.web.security.JwtAuthenticationFailureEntryPoint;
 
 @Configuration
 @ConditionalOnProperty(name = "app.security.oidc.enabled", havingValue = "true")

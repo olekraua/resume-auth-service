@@ -22,16 +22,16 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
 
-import net.devstudy.resume.auth.api.service.ProfileAccountService;
-import net.devstudy.resume.auth.internal.client.ProfileInternalClient;
-import net.devstudy.resume.auth.internal.entity.ProfileRestore;
-import net.devstudy.resume.auth.internal.repository.storage.ProfileRestoreRepository;
-import net.devstudy.resume.auth.internal.service.impl.RestoreAccessServiceImpl;
-import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
-import net.devstudy.resume.profile.api.dto.internal.ProfileIdentifierLookupRequest;
-import net.devstudy.resume.profile.api.dto.internal.ProfileLookupResponse;
-import net.devstudy.resume.profile.api.dto.internal.ProfilePasswordUpdateRequest;
-import net.devstudy.resume.shared.component.DataBuilder;
+import net.devstudy.resume.ms.auth.application.port.in.service.ProfileAccountService;
+import net.devstudy.resume.ms.auth.adapters.profile.client.ProfileInternalClient;
+import net.devstudy.resume.ms.auth.domain.entity.ProfileRestore;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.ProfileRestoreRepository;
+import net.devstudy.resume.ms.auth.application.service.impl.RestoreAccessServiceImpl;
+import net.devstudy.resume.ms.auth.ports.notification.event.RestoreAccessMailRequestedEvent;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileIdentifierLookupRequest;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileLookupResponse;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfilePasswordUpdateRequest;
+import net.devstudy.resume.ms.auth.application.support.component.DataBuilder;
 
 @ExtendWith(MockitoExtension.class)
 class RestoreAccessServiceImplTest {

@@ -21,11 +21,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.yaml.snakeyaml.Yaml;
 
-import net.devstudy.resume.web.controller.SessionApiController;
-import net.devstudy.resume.web.controller.api.AccountApiController;
-import net.devstudy.resume.web.controller.api.AuthApiController;
-import net.devstudy.resume.web.controller.api.CsrfApiController;
-import net.devstudy.resume.web.controller.api.PublicAuthApiController;
+import net.devstudy.resume.ms.auth.adapters.web.controller.SessionApiController;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.AccountApiController;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.AuthApiController;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.CsrfApiController;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.PublicAuthApiController;
 
 class AuthOidcSurfaceConsumerContractTest {
 

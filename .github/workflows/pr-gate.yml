@@ -7,13 +7,14 @@ on:
     branches: [main]
 
 permissions:
+  actions: read
   contents: read
   pull-requests: write
   security-events: write
 
 jobs:
   ci_policy:
-    uses: olekraua/resume-backend-infra/.github/workflows/reusable-ci-policy.yml@main
+    uses: olekraua/resume-backend-infra/.github/workflows/reusable-ci-policy.yml@chore/ci-policy-hardening-2026-03-22
     with:
       coverage_threshold: 70
     secrets: inherit

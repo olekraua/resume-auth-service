@@ -10,13 +10,13 @@ import org.mockito.ArgumentCaptor;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.devstudy.resume.auth.internal.entity.AuthOutboxEvent;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxEventType;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxStatus;
-import net.devstudy.resume.auth.internal.outbox.AuthOutboxListener;
-import net.devstudy.resume.auth.internal.outbox.AuthOutboxWriter;
-import net.devstudy.resume.auth.internal.repository.storage.AuthOutboxRepository;
-import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxEvent;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxEventType;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxStatus;
+import net.devstudy.resume.ms.auth.adapters.outbox.AuthOutboxListener;
+import net.devstudy.resume.ms.auth.adapters.outbox.AuthOutboxWriter;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.AuthOutboxRepository;
+import net.devstudy.resume.ms.auth.ports.notification.event.RestoreAccessMailRequestedEvent;
 
 class AuthOutboxComponentsTest {
 

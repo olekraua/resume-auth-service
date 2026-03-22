@@ -4,12 +4,12 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-import net.devstudy.resume.web.config.CorsConfig;
-import net.devstudy.resume.web.config.CorsProperties;
-import net.devstudy.resume.web.controller.api.ApiExceptionHandler;
-import net.devstudy.resume.web.security.CurrentProfileJwtConverter;
-import net.devstudy.resume.web.security.JwtAuthenticationFailureEntryPoint;
-import net.devstudy.resume.web.security.RememberMeSupport;
+import net.devstudy.resume.ms.auth.adapters.web.config.CorsConfig;
+import net.devstudy.resume.ms.auth.adapters.web.config.CorsProperties;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.ApiExceptionHandler;
+import net.devstudy.resume.ms.auth.adapters.web.security.CurrentProfileJwtConverter;
+import net.devstudy.resume.ms.auth.adapters.web.security.JwtAuthenticationFailureEntryPoint;
+import net.devstudy.resume.ms.auth.adapters.web.security.RememberMeSupport;
 
 @Configuration(proxyBeanMethods = false)
 @EnableConfigurationProperties(CorsProperties.class)

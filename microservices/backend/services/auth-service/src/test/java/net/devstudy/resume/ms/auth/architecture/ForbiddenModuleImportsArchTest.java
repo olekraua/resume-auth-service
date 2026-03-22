@@ -15,7 +15,6 @@ class ForbiddenModuleImportsArchTest {
     private static final List<String> FORBIDDEN_JAR_MARKERS = List.of(
             "/resume-web-",
             "/resume-search-",
-            "/resume-auth-",
             "/resume-profile-",
             "/resume-notification-"
     );
@@ -37,10 +36,7 @@ class ForbiddenModuleImportsArchTest {
             .that()
             .resideInAnyPackage(
                     "net.devstudy.resume.ms.auth..",
-                    "net.devstudy.resume.auth..",
-                    "net.devstudy.resume.web..",
-                    "net.devstudy.resume.profile..",
-                    "net.devstudy.resume.notification.."
+                    "net.devstudy.resume.auth.."
             )
             .should()
             .dependOnClassesThat(FORBIDDEN_EXTERNAL_MODULE_CLASS);

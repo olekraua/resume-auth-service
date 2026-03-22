@@ -29,6 +29,22 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Install XML tooling for parent model verification
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends libxml2-utils
+
+      - name: Bootstrap local resume-contracts artifacts
+        run: |
+          rm -rf .ci-resume-contracts
+          if [ -n "${GH_PACKAGES_TOKEN:-}" ]; then
+            git clone --depth 1 "https://x-access-token:${GH_PACKAGES_TOKEN}@github.com/olekraua/resume-contracts.git" .ci-resume-contracts
+          else
+            git clone --depth 1 https://github.com/olekraua/resume-contracts.git .ci-resume-contracts
+          fi
+          chmod +x .ci-resume-contracts/mvnw
+          (cd .ci-resume-contracts && ./mvnw -B -ntp -DskipTests install)
+
       - name: Configure Maven settings for GitHub Packages
         run: |
           mkdir -p ~/.m2
@@ -94,6 +110,17 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Bootstrap local resume-contracts artifacts
+        run: |
+          rm -rf .ci-resume-contracts
+          if [ -n "${GH_PACKAGES_TOKEN:-}" ]; then
+            git clone --depth 1 "https://x-access-token:${GH_PACKAGES_TOKEN}@github.com/olekraua/resume-contracts.git" .ci-resume-contracts
+          else
+            git clone --depth 1 https://github.com/olekraua/resume-contracts.git .ci-resume-contracts
+          fi
+          chmod +x .ci-resume-contracts/mvnw
+          (cd .ci-resume-contracts && ./mvnw -B -ntp -DskipTests install)
+
       - name: Configure Maven settings for GitHub Packages
         run: |
           mkdir -p ~/.m2
@@ -155,6 +182,17 @@ jobs:
           distribution: temurin
           java-version: "21"
           cache: maven
+
+      - name: Bootstrap local resume-contracts artifacts
+        run: |
+          rm -rf .ci-resume-contracts
+          if [ -n "${GH_PACKAGES_TOKEN:-}" ]; then
+            git clone --depth 1 "https://x-access-token:${GH_PACKAGES_TOKEN}@github.com/olekraua/resume-contracts.git" .ci-resume-contracts
+          else
+            git clone --depth 1 https://github.com/olekraua/resume-contracts.git .ci-resume-contracts
+          fi
+          chmod +x .ci-resume-contracts/mvnw
+          (cd .ci-resume-contracts && ./mvnw -B -ntp -DskipTests install)
 
       - name: Configure Maven settings for GitHub Packages
         run: |

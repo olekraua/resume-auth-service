@@ -25,12 +25,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import net.devstudy.resume.auth.api.model.CurrentProfile;
-import net.devstudy.resume.auth.api.security.CurrentProfileProvider;
-import net.devstudy.resume.auth.internal.security.LoginLockedException;
-import net.devstudy.resume.auth.internal.security.LoginProtectionService;
-import net.devstudy.resume.web.controller.api.AuthApiController;
-import net.devstudy.resume.web.security.RememberMeSupport;
+import net.devstudy.resume.ms.auth.api.model.CurrentProfile;
+import net.devstudy.resume.ms.auth.application.port.in.security.CurrentProfileProvider;
+import net.devstudy.resume.ms.auth.application.security.LoginLockedException;
+import net.devstudy.resume.ms.auth.application.security.LoginProtectionService;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.AuthApiController;
+import net.devstudy.resume.ms.auth.adapters.web.security.RememberMeSupport;
 
 @WebMvcTest(controllers = AuthApiController.class, properties = "app.security.session.enabled=true")
 @AutoConfigureMockMvc(addFilters = false)
