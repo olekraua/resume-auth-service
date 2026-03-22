@@ -14,10 +14,10 @@ import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import net.devstudy.resume.auth.api.model.CurrentProfile;
-import net.devstudy.resume.auth.api.security.CurrentProfileProvider;
-import net.devstudy.resume.web.controller.SessionApiController;
-import net.devstudy.resume.web.controller.api.CsrfApiController;
+import net.devstudy.resume.ms.auth.api.model.CurrentProfile;
+import net.devstudy.resume.ms.auth.application.port.in.security.CurrentProfileProvider;
+import net.devstudy.resume.ms.auth.adapters.web.controller.SessionApiController;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.CsrfApiController;
 
 @WebMvcTest(controllers = {SessionApiController.class, CsrfApiController.class})
 @AutoConfigureMockMvc(addFilters = false)

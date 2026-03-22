@@ -22,10 +22,10 @@ import org.yaml.snakeyaml.Yaml;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import net.devstudy.resume.auth.internal.entity.AuthOutboxEvent;
-import net.devstudy.resume.auth.internal.outbox.AuthOutboxWriter;
-import net.devstudy.resume.auth.internal.repository.storage.AuthOutboxRepository;
-import net.devstudy.resume.notification.api.event.RestoreAccessMailRequestedEvent;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxEvent;
+import net.devstudy.resume.ms.auth.adapters.outbox.AuthOutboxWriter;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.AuthOutboxRepository;
+import net.devstudy.resume.ms.auth.ports.notification.event.RestoreAccessMailRequestedEvent;
 
 class AuthRestoreAccessMailAsyncConsumerContractTest {
 

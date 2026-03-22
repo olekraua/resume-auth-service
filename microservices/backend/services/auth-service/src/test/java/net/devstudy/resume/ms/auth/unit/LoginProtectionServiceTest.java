@@ -18,10 +18,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import net.devstudy.resume.auth.internal.entity.AuthUser;
-import net.devstudy.resume.auth.internal.repository.storage.AuthUserRepository;
-import net.devstudy.resume.auth.internal.security.LoginLockedException;
-import net.devstudy.resume.auth.internal.security.LoginProtectionService;
+import net.devstudy.resume.ms.auth.domain.entity.AuthUser;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.AuthUserRepository;
+import net.devstudy.resume.ms.auth.application.security.LoginLockedException;
+import net.devstudy.resume.ms.auth.application.security.LoginProtectionService;
 
 @ExtendWith(MockitoExtension.class)
 class LoginProtectionServiceTest {

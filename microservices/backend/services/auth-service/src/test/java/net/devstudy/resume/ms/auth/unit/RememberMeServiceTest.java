@@ -20,11 +20,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
 
-import net.devstudy.resume.auth.api.service.ProfileAccountService;
-import net.devstudy.resume.auth.internal.entity.RememberMeToken;
-import net.devstudy.resume.auth.internal.repository.storage.RememberMeTokenRepository;
-import net.devstudy.resume.auth.internal.service.impl.RememberMeService;
-import net.devstudy.resume.profile.api.dto.internal.ProfileAuthResponse;
+import net.devstudy.resume.ms.auth.application.port.in.service.ProfileAccountService;
+import net.devstudy.resume.ms.auth.domain.entity.RememberMeToken;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.RememberMeTokenRepository;
+import net.devstudy.resume.ms.auth.application.service.impl.RememberMeService;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileAuthResponse;
 
 @ExtendWith(MockitoExtension.class)
 class RememberMeServiceTest {

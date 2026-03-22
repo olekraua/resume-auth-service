@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import lombok.RequiredArgsConstructor;
-import net.devstudy.resume.auth.api.service.OidcAuthorizationRevocationService;
+import net.devstudy.resume.ms.auth.application.port.in.service.OidcAuthorizationRevocationService;
 
 @Service
 @RequiredArgsConstructor

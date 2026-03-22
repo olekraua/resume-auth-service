@@ -38,7 +38,7 @@ class ForbiddenModuleImportsArchTest {
             .resideInAnyPackage(
                     "net.devstudy.resume.ms.auth..",
                     "net.devstudy.resume.auth..",
-                    "net.devstudy.resume.web..",
+                    "net.devstudy.resume.ms.auth.adapters.web..",
                     "net.devstudy.resume.profile..",
                     "net.devstudy.resume.notification.."
             )

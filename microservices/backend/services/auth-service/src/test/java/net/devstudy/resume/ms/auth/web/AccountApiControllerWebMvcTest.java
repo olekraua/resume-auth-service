@@ -25,16 +25,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
-import net.devstudy.resume.auth.api.model.CurrentProfile;
-import net.devstudy.resume.auth.api.security.CurrentProfileProvider;
-import net.devstudy.resume.auth.api.service.ProfileAccountService;
-import net.devstudy.resume.auth.api.service.UidSuggestionService;
-import net.devstudy.resume.profile.api.dto.internal.ProfileAuthResponse;
-import net.devstudy.resume.profile.api.dto.internal.ProfilePasswordUpdateRequest;
-import net.devstudy.resume.profile.api.dto.internal.ProfileUidUpdateRequest;
-import net.devstudy.resume.profile.api.exception.UidAlreadyExistsException;
-import net.devstudy.resume.web.controller.api.AccountApiController;
-import net.devstudy.resume.web.security.RememberMeSupport;
+import net.devstudy.resume.ms.auth.api.model.CurrentProfile;
+import net.devstudy.resume.ms.auth.application.port.in.security.CurrentProfileProvider;
+import net.devstudy.resume.ms.auth.application.port.in.service.ProfileAccountService;
+import net.devstudy.resume.ms.auth.application.port.in.service.UidSuggestionService;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileAuthResponse;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfilePasswordUpdateRequest;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileUidUpdateRequest;
+import net.devstudy.resume.ms.auth.ports.profile.exception.UidAlreadyExistsException;
+import net.devstudy.resume.ms.auth.adapters.web.controller.api.AccountApiController;
+import net.devstudy.resume.ms.auth.adapters.web.security.RememberMeSupport;
 
 @WebMvcTest(controllers = AccountApiController.class, properties = "app.security.session.enabled=true")
 @AutoConfigureMockMvc(addFilters = false)

@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 
 import net.devstudy.resume.ms.auth.config.AuthModuleWiringConfiguration;
 import net.devstudy.resume.ms.auth.config.WebModuleWiringConfiguration;
-import net.devstudy.resume.web.controller.SessionApiController;
+import net.devstudy.resume.ms.auth.adapters.web.controller.SessionApiController;
 
 @SpringBootApplication(scanBasePackageClasses = {
         AuthServiceApplication.class,

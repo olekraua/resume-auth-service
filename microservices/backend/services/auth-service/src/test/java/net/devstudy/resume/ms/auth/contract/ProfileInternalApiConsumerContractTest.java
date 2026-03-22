@@ -23,12 +23,12 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 import org.yaml.snakeyaml.Yaml;
 
-import net.devstudy.resume.auth.internal.client.HttpProfileInternalClient;
-import net.devstudy.resume.profile.api.dto.internal.ProfileAuthResponse;
-import net.devstudy.resume.profile.api.dto.internal.ProfileIdentifierLookupRequest;
-import net.devstudy.resume.profile.api.dto.internal.ProfileLookupResponse;
-import net.devstudy.resume.profile.api.dto.internal.ProfileRegistrationRequest;
-import net.devstudy.resume.profile.api.dto.internal.ProfileUidUpdateRequest;
+import net.devstudy.resume.ms.auth.adapters.profile.client.HttpProfileInternalClient;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileAuthResponse;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileIdentifierLookupRequest;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileLookupResponse;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileRegistrationRequest;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileUidUpdateRequest;
 
 class ProfileInternalApiConsumerContractTest {
 

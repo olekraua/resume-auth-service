@@ -35,24 +35,24 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import net.devstudy.resume.auth.api.service.ProfileAccountService;
-import net.devstudy.resume.auth.api.service.RestoreAccessService;
-import net.devstudy.resume.auth.internal.client.HttpProfileInternalClient;
-import net.devstudy.resume.auth.internal.client.ProfileInternalClient;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxEvent;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxEventType;
-import net.devstudy.resume.auth.internal.entity.AuthOutboxStatus;
-import net.devstudy.resume.auth.internal.entity.ProfileRestore;
-import net.devstudy.resume.auth.internal.outbox.AuthOutboxListener;
-import net.devstudy.resume.auth.internal.outbox.AuthOutboxWriter;
-import net.devstudy.resume.auth.internal.repository.storage.AuthOutboxRepository;
-import net.devstudy.resume.auth.internal.repository.storage.ProfileRestoreRepository;
-import net.devstudy.resume.auth.internal.service.impl.RestoreAccessServiceImpl;
-import net.devstudy.resume.profile.api.dto.internal.ProfileAuthResponse;
-import net.devstudy.resume.profile.api.dto.internal.ProfilePasswordUpdateRequest;
-import net.devstudy.resume.profile.api.dto.internal.ProfileRegistrationRequest;
-import net.devstudy.resume.profile.api.dto.internal.ProfileUidUpdateRequest;
-import net.devstudy.resume.shared.component.DataBuilder;
+import net.devstudy.resume.ms.auth.application.port.in.service.ProfileAccountService;
+import net.devstudy.resume.ms.auth.application.port.in.service.RestoreAccessService;
+import net.devstudy.resume.ms.auth.adapters.profile.client.HttpProfileInternalClient;
+import net.devstudy.resume.ms.auth.adapters.profile.client.ProfileInternalClient;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxEvent;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxEventType;
+import net.devstudy.resume.ms.auth.domain.entity.AuthOutboxStatus;
+import net.devstudy.resume.ms.auth.domain.entity.ProfileRestore;
+import net.devstudy.resume.ms.auth.adapters.outbox.AuthOutboxListener;
+import net.devstudy.resume.ms.auth.adapters.outbox.AuthOutboxWriter;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.AuthOutboxRepository;
+import net.devstudy.resume.ms.auth.adapters.persistence.repository.storage.ProfileRestoreRepository;
+import net.devstudy.resume.ms.auth.application.service.impl.RestoreAccessServiceImpl;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileAuthResponse;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfilePasswordUpdateRequest;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileRegistrationRequest;
+import net.devstudy.resume.ms.auth.ports.profile.dto.internal.ProfileUidUpdateRequest;
+import net.devstudy.resume.ms.auth.application.support.component.DataBuilder;
 
 @SpringBootTest(classes = ProfileClientOutboxIntegrationTest.TestApp.class)
 @Testcontainers

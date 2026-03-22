@@ -10,15 +10,13 @@ import com.tngtech.archunit.lang.ArchRule;
 class PackageBoundariesArchTest {
 
     private static final String LOCAL_MS_AUTH_PACKAGE = "net.devstudy.resume.ms.auth.";
-    private static final String LOCAL_LEGACY_AUTH_PACKAGE = "net.devstudy.resume.auth.";
 
     @ArchTest
     static final ArchRule local_code_should_not_depend_on_unrelated_service_packages = noClasses()
             .that()
             .resideInAnyPackage(
                     "net.devstudy.resume.ms.auth..",
-                    "net.devstudy.resume.auth..",
-                    "net.devstudy.resume.web..")
+                    "net.devstudy.resume.ms.auth.adapters.web..")
             .should()
             .dependOnClassesThat()
             .resideInAnyPackage(
@@ -32,56 +30,40 @@ class PackageBoundariesArchTest {
     static final ArchRule auth_public_api_should_not_depend_on_internal_or_web = noClasses()
             .that()
             .resideInAnyPackage(
-                    "net.devstudy.resume.auth.api.dto..",
-                    "net.devstudy.resume.auth.api.model..",
-                    "net.devstudy.resume.auth.api.security..",
-                    "net.devstudy.resume.auth.api.service..")
+                    "net.devstudy.resume.ms.auth.api.dto..",
+                    "net.devstudy.resume.ms.auth.api.model..",
+                    "net.devstudy.resume.ms.auth.application.port.in.security..",
+                    "net.devstudy.resume.ms.auth.application.port.in.service..")
             .should()
             .dependOnClassesThat()
             .resideInAnyPackage(
-                    "net.devstudy.resume.auth.internal..",
-                    "net.devstudy.resume.web..",
-                    "net.devstudy.resume.ms.auth..");
+                    "net.devstudy.resume.ms.auth.adapters.web..",
+                    "net.devstudy.resume.ms.auth.application.service.impl..",
+                    "net.devstudy.resume.ms.auth.config..");
 
     @ArchTest
     static final ArchRule domain_data_packages_should_not_depend_on_transport_packages = noClasses()
             .that()
             .resideInAnyPackage(
-                    LOCAL_MS_AUTH_PACKAGE + "model..",
-                    LOCAL_MS_AUTH_PACKAGE + "entity..",
-                    LOCAL_MS_AUTH_PACKAGE + "event..",
-                    LOCAL_MS_AUTH_PACKAGE + "dto..",
-                    LOCAL_LEGACY_AUTH_PACKAGE + "model..",
-                    LOCAL_LEGACY_AUTH_PACKAGE + "entity..",
-                    LOCAL_LEGACY_AUTH_PACKAGE + "event..",
-                    LOCAL_LEGACY_AUTH_PACKAGE + "dto..")
+                    LOCAL_MS_AUTH_PACKAGE + "domain.entity..",
+                    LOCAL_MS_AUTH_PACKAGE + "domain.model..")
             .should()
             .dependOnClassesThat()
             .resideInAnyPackage(
-                    LOCAL_MS_AUTH_PACKAGE + "web..",
-                    LOCAL_MS_AUTH_PACKAGE + "controller..",
-                    LOCAL_MS_AUTH_PACKAGE + "messaging..",
-                    LOCAL_MS_AUTH_PACKAGE + "mqtt..",
-                    LOCAL_MS_AUTH_PACKAGE + "ws..",
-                    LOCAL_LEGACY_AUTH_PACKAGE + "web..",
-                    "net.devstudy.resume.web..")
+                    LOCAL_MS_AUTH_PACKAGE + "adapters.web..",
+                    LOCAL_MS_AUTH_PACKAGE + "adapters.profile..",
+                    LOCAL_MS_AUTH_PACKAGE + "config..")
             .allowEmptyShould(true);
 
     @ArchTest
     static final ArchRule persistence_and_outbox_packages_should_not_depend_on_transport_packages = noClasses()
             .that()
             .resideInAnyPackage(
-                    LOCAL_MS_AUTH_PACKAGE + "repository..",
-                    LOCAL_MS_AUTH_PACKAGE + "outbox..",
-                    LOCAL_LEGACY_AUTH_PACKAGE + "repository..")
+                    LOCAL_MS_AUTH_PACKAGE + "adapters.persistence..",
+                    LOCAL_MS_AUTH_PACKAGE + "adapters.outbox..")
             .should()
             .dependOnClassesThat()
             .resideInAnyPackage(
-                    LOCAL_MS_AUTH_PACKAGE + "web..",
-                    LOCAL_MS_AUTH_PACKAGE + "controller..",
-                    LOCAL_MS_AUTH_PACKAGE + "mqtt..",
-                    LOCAL_MS_AUTH_PACKAGE + "ws..",
-                    LOCAL_LEGACY_AUTH_PACKAGE + "web..",
-                    "net.devstudy.resume.web..")
+                    LOCAL_MS_AUTH_PACKAGE + "adapters.web..")
             .allowEmptyShould(true);
 }

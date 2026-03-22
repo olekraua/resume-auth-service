@@ -13,8 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import net.devstudy.resume.auth.internal.client.ProfileInternalClient;
-import net.devstudy.resume.auth.internal.service.impl.UidSuggestionServiceImpl;
+import net.devstudy.resume.ms.auth.adapters.profile.client.ProfileInternalClient;
+import net.devstudy.resume.ms.auth.application.service.impl.UidSuggestionServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class UidSuggestionServiceImplTest {
