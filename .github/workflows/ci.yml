@@ -38,11 +38,6 @@ jobs:
                     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
               <server>
-                <id>github-platform-libs</id>
-                <username>${env.GITHUB_ACTOR}</username>
-                <password>${env.GH_PACKAGES_TOKEN}</password>
-              </server>
-              <server>
                 <id>github-contracts</id>
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.GH_PACKAGES_TOKEN}</password>
@@ -52,16 +47,6 @@ jobs:
               <profile>
                 <id>github-packages</id>
                 <repositories>
-                  <repository>
-                    <id>github-platform-libs</id>
-                    <url>https://maven.pkg.github.com/olekraua/resume-platform-libs</url>
-                    <releases>
-                      <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                      <enabled>true</enabled>
-                    </snapshots>
-                  </repository>
                   <repository>
                     <id>github-contracts</id>
                     <url>https://maven.pkg.github.com/olekraua/resume-contracts</url>
@@ -118,11 +103,6 @@ jobs:
                     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
               <server>
-                <id>github-platform-libs</id>
-                <username>${env.GITHUB_ACTOR}</username>
-                <password>${env.GH_PACKAGES_TOKEN}</password>
-              </server>
-              <server>
                 <id>github-contracts</id>
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.GH_PACKAGES_TOKEN}</password>
@@ -132,16 +112,6 @@ jobs:
               <profile>
                 <id>github-packages</id>
                 <repositories>
-                  <repository>
-                    <id>github-platform-libs</id>
-                    <url>https://maven.pkg.github.com/olekraua/resume-platform-libs</url>
-                    <releases>
-                      <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                      <enabled>true</enabled>
-                    </snapshots>
-                  </repository>
                   <repository>
                     <id>github-contracts</id>
                     <url>https://maven.pkg.github.com/olekraua/resume-contracts</url>
@@ -195,11 +165,6 @@ jobs:
                     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
             <servers>
               <server>
-                <id>github-platform-libs</id>
-                <username>${env.GITHUB_ACTOR}</username>
-                <password>${env.GH_PACKAGES_TOKEN}</password>
-              </server>
-              <server>
                 <id>github-contracts</id>
                 <username>${env.GITHUB_ACTOR}</username>
                 <password>${env.GH_PACKAGES_TOKEN}</password>
@@ -209,16 +174,6 @@ jobs:
               <profile>
                 <id>github-packages</id>
                 <repositories>
-                  <repository>
-                    <id>github-platform-libs</id>
-                    <url>https://maven.pkg.github.com/olekraua/resume-platform-libs</url>
-                    <releases>
-                      <enabled>true</enabled>
-                    </releases>
-                    <snapshots>
-                      <enabled>true</enabled>
-                    </snapshots>
-                  </repository>
                   <repository>
                     <id>github-contracts</id>
                     <url>https://maven.pkg.github.com/olekraua/resume-contracts</url>

@@ -20,7 +20,7 @@ Single-service repository for `microservices/backend/services/auth-service`.
 
 If you work fully local, install fresh shared/contracts artifacts from sibling repos:
 
-- `cd ../resume-platform-libs && ./mvnw -DskipTests install`
+- `./mvnw -DskipTests verify`
 - `cd ../resume-contracts && ./mvnw -DskipTests install`
 
 ## Build and run

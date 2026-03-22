@@ -46,3 +46,9 @@ build/
 
 # Vendored platform-libs build outputs
 vendor/platform-libs/**/target/
+
+# Vendored platform-libs build outputs
+vendor/platform-libs/**/target/
+
+# Vendored platform-libs build outputs
+vendor/platform-libs/**/target/

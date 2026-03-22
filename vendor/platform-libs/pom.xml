@@ -34,18 +34,8 @@
 		<module>platform-observability</module>
 		<module>platform-http</module>
 		<module>platform-security</module>
-		<module>platform-test</module>
 		<module>platform-shared-auth</module>
 		<module>shared</module>
-		<module>staticdata</module>
-		<module>profile</module>
-		<module>notification</module>
-		<module>auth</module>
-		<module>file</module>
-		<module>media</module>
-		<module>web</module>
-		<module>search</module>
-		<module>messaging</module>
 	</modules>
 
 	<properties>
